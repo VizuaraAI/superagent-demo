@@ -18,3 +18,13 @@ def test_refresh_just_before_expiry():
     server.now = 95
     assert t.get("/me") == 200
     assert t.access != "access-1"
+
+
+def test_refresh_after_idle_period_past_expiry():
+    """Session was idle so long that now > expires_at — should still refresh."""
+    server, exp = make()
+    t = TokenRefresher(server, "refresh-1", "access-1", exp)
+    server.now = 110  # past the 100 expiry
+    assert t.get("/me") == 200, (
+        "Expected 200 even after idle past expiry, but got 401"
+    )
