@@ -9,8 +9,10 @@ class TokenRefresher:
         self.expires_at = expires_at
 
     def refresh_if_needed(self):
-        # Refresh shortly before the token expires.
-        if 0 <= self.expires_at - self.server.now <= 10:
+        # Refresh shortly before the token expires, and also when it has
+        # already expired (e.g. the app sat idle for a long time): in that
+        # case `expires_at - now` is negative, so the window is one-sided.
+        if self.expires_at - self.server.now < 10:
             self.access, self.expires_at = self.server.refresh(self.refresh_token)
 
     def get(self, path):
