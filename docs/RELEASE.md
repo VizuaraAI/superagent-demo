@@ -1,21 +1,18 @@
 # Release v2.9
 
-## Token Refresh
-- **Proactive refresh before expiry.** `TokenRefresher` checks expiry on every API call and
-  refreshes the access token if it is within 10 seconds of expiration.
-- **Preserves refresh token across cycles.** The same refresh token can be reused for
-  successive access-token renewals, keeping the session alive indefinitely.
+## Android
+- **Proactive token refresh.** `TokenRefresher` inspects expiry before every API call
+  and renews the access token when it is within 10 seconds of expiration.
+- **Seamless session continuity.** Refresh tokens persist across renewal cycles so
+  the user stays signed in without re-authentication.
 
-## Auth Server
-- **Fake backend for offline tests.** `AuthServer` tracks token validity with a
-  controllable clock (`now`), avoiding any network dependency in the test suite.
-- **Configurable token state.** Tests can pre-seed the server with arbitrary access tokens
-  and expiry timestamps via `login_with()`.
+## Backend
+- **Offline-first test auth server.** `AuthServer` is a fake OAuth backend with a
+  manually steppable clock (`now`), so the full auth flow is exercised without any
+  network calls.
+- **Configurable token store.** `login_with()` lets tests seed the server with
+  arbitrary access tokens and custom expiry windows.
 
-## Test Suite
-- **Fresh-token call returns 200.** Validates that a valid, unexpired token succeeds on
-  API calls.
-- **Pre-expiry refresh.** Advances the clock to 5 seconds before expiry and confirms that
-  `get()` triggers a refresh and uses the new access token.
-- **CI integration.** Tests run automatically on every pull request and push to `main`
-  via GitHub Actions (Python 3.11, pytest).
+## CI
+- **Android test workflow on GitHub Actions.** Every PR and push to `main` triggers
+  `pytest -q` on Python 3.11, keeping the Android client surface covered.
