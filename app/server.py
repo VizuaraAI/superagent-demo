@@ -7,6 +7,10 @@ class AuthServer:
         self.tokens = {"refresh-1": ("access-1", 100)}
         self.counter = 1
 
+    def health(self):
+        """A liveness probe. Always "ok": no tokens or network needed."""
+        return "ok"
+
     def login_with(self, access, expires_at):
         self.tokens[access] = (access, expires_at)
 
