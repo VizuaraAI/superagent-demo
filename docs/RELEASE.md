@@ -2,13 +2,18 @@
 
 ## v2.9
 
-### Authentication Server
+### Android
 
-- **Login with access token**: `AuthServer.login_with(access, expires_at)` registers a new access token with a given expiry time.
-- **API call validation**: `AuthServer.call(access)` returns 200 while the token is valid, or 401 once it has expired.
-- **Token refresh**: `AuthServer.refresh(refresh_token)` issues a new access token with a fresh 100-second lifetime, keyed by the refresh token.
+- **Proactive token refresh**: The client automatically refreshes the access token when it is within 10 seconds of expiry, so the session stays alive without the user having to re-login.
+- **Transparent API calls**: `TokenRefresher.get(path)` combines the refresh check with every API call, ensuring stale tokens never reach the server.
 
-### Token Refresher
+### iOS
 
-- **Proactive refresh**: `TokenRefresher.refresh_if_needed()` automatically refreshes the access token when it is within 10 seconds of expiry, keeping the session alive without user intervention.
-- **Transparent API access**: `TokenRefresher.get(path)` combines refresh logic with an API call so callers always use a valid token.
+- **Proactive token refresh**: Same behaviour as Android — the refresh window is 10 seconds before expiry.
+- **Transparent API calls**: Every `get()` call refreshes automatically when needed.
+
+### Backend (Auth Server)
+
+- **Login with access token**: `AuthServer.login_with(access, expires_at)` registers a new token with a given expiry.
+- **API call validation**: `AuthServer.call(access)` returns 200 while valid, 401 after expiry.
+- **Token refresh**: `AuthServer.refresh(refresh_token)` issues a fresh access token with a 100-second lifetime.
