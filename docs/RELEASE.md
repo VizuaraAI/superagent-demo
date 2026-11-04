@@ -1,16 +1,16 @@
 # v2.9 Release Notes
 
-## Authentication
+## Android
 
-- **AuthServer**: Added a lightweight fake auth server for offline testing, supporting login, token validation via `/me`-style API calls, and refresh token rotation.
-- Token expiry is time-based, controllable via `server.now`, enabling deterministic test scenarios without real network calls.
+- **TokenRefresher**: Automatic access-token refresh. Before each API call the refresher checks expiry and renews the token within a 10-second window, giving users a seamless signed-in experience.
+- The `get(path)` method transparently refreshes then calls the server — no manual token handling needed in the Android app.
 
-## Token Management
+## Backend
 
-- **TokenRefresher**: Introduced automatic access-token refresh. The refresher checks expiry before each API call and renews the token when it is within a configurable window (10 seconds before expiry).
-- The `get(path)` method transparently refreshes and then calls the server, so consumers get a seamless signed-in experience.
+- **AuthServer**: Lightweight fake auth server for offline testing. Supports login, token validation via API calls, and refresh-token rotation.
+- Token expiry is time-based, controlled via `server.now`, enabling deterministic test scenarios without real network calls.
 
 ## Testing
 
-- Test suite using `pytest` covers fresh-token calls and the just-before-expiry refresh path.
-- All tests run with no external dependencies—the fake `AuthServer` keeps the suite fast and reliable.
+- pytest suite covers fresh-token calls and the just-before-expiry refresh path.
+- All tests run with no external dependencies — the fake `AuthServer` keeps the suite fast and offline.
