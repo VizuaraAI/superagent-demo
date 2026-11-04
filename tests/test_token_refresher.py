@@ -18,3 +18,13 @@ def test_refresh_just_before_expiry():
     server.now = 95
     assert t.get("/me") == 200
     assert t.access != "access-1"
+
+
+def test_refresh_after_idle_period_token_expired():
+    """Session idle for a while — token has already expired. Should still refresh."""
+    server, exp = make()
+    t = TokenRefresher(server, "refresh-1", "access-1", exp)
+    # Token expired 50 seconds ago
+    server.now = 150
+    assert t.get("/me") == 200
+    assert t.access != "access-1"
