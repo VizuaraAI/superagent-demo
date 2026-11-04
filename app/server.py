@@ -7,6 +7,9 @@ class AuthServer:
         self.tokens = {"refresh-1": ("access-1", 100)}
         self.counter = 1
 
+    def health(self):
+        return {"status": "ok", "time": self.now}
+
     def login_with(self, access, expires_at):
         self.tokens[access] = (access, expires_at)
 
