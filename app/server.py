@@ -8,8 +8,8 @@ class AuthServer:
         self.counter = 1
 
     def health(self):
-        """A liveness probe. Always "ok": no tokens or network needed."""
-        return "ok"
+        """A liveness probe: reports status plus the server's current time."""
+        return {"status": "ok", "now": self.now}
 
     def login_with(self, access, expires_at):
         self.tokens[access] = (access, expires_at)
