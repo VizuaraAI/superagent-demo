@@ -2,13 +2,10 @@
 
 ## v2.9
 
-### Authentication Server
-- Added `AuthServer` class providing a lightweight fake auth server for testing without network dependencies.
-- `login_with(access, expires_at)` registers a token with its expiration time.
-- `call(access)` returns 200 if the access token is still valid, 401 otherwise.
-- `refresh(refresh_token)` rotates access tokens, issuing a new token with a fresh expiration window.
+### Android
+- **Token Refresher**: `TokenRefresher` keeps the app signed in by automatically refreshing access tokens before they expire. Call `get(path)` to combine refresh logic with any API request.
+- **Proactive refresh**: Tokens are renewed within 10 units of expiration, avoiding interruptions from stale credentials.
 
-### Token Refresher
-- Added `TokenRefresher` class that keeps the app signed in by automatically refreshing tokens.
-- `refresh_if_needed()` proactively refreshes the access token shortly before expiry (within 10 units of expiration).
-- `get(path)` combines refresh logic with an API call, returning the server's response.
+### Backend
+- **Auth Server**: `AuthServer` provides a lightweight fake auth server so tests run with no network. Register tokens via `login_with(access, expires_at)`, validate calls with `call(access)`, and rotate tokens with `refresh(refresh_token)`.
+- **Test independence**: All auth flows can be exercised offline, speeding up CI and local development.
